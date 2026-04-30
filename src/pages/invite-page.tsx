@@ -66,10 +66,10 @@ const RewardRowItem: React.FC<RewardRowProps> = ({ row, isChild, expanded, onTog
       transition={{ type: "spring", stiffness: 300, damping: 30, delay: 0.04 * delayIndex }}
       className="flex items-center px-1"
     >
-      <span className={`text-[#EBC17B] text-[13px] font-medium tracking-[-0.5px] leading-[28px] ${COLS.name} ${isChild ? "pl-3" : ""}`}>
+      <span className={`text-[#EBC17B] text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.name} ${isChild ? "pl-3" : ""}`}>
         {row.name}
       </span>
-      <span className={`text-[#EBC17B] text-[13px] font-medium tracking-[-0.5px] leading-[28px] ${COLS.relation} flex justify-center`}>
+      <span className={`text-[#EBC17B] text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.relation} flex justify-center`}>
         {hasChildren ? (
           <button
             onClick={onToggle}
@@ -82,19 +82,19 @@ const RewardRowItem: React.FC<RewardRowProps> = ({ row, isChild, expanded, onTog
           <span />
         )}
       </span>
-      <span className={`text-white text-[13px] font-semibold tracking-[-0.5px] leading-[28px] ${COLS.staking} text-center`}>
+      <span className={`text-white text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.staking} text-center`}>
         {row.staking}
       </span>
-      <span className={`text-[#EBC17B] text-[13px] font-medium tracking-[-0.5px] leading-[28px] ${COLS.days} text-center`}>
+      <span className={`text-[#EBC17B] text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.days} text-center`}>
         {row.days}
       </span>
-      <span className={`text-[#EBC17B] text-[13px] font-medium tracking-[-0.5px] leading-[28px] ${COLS.rank} text-center`}>
+      <span className={`text-[#EBC17B] text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.rank} text-center`}>
         {row.rank}
       </span>
-      <span className={`text-[#EBC17B] text-[13px] font-medium tracking-[-0.5px] leading-[28px] ${COLS.percent} text-right`}>
+      <span className={`text-[#EBC17B] text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.percent} text-right`}>
         {row.percent}
       </span>
-      <span className={`text-white text-[13px] font-semibold tracking-[-0.5px] leading-[28px] ${COLS.today} text-right`}>
+      <span className={`text-white text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.today} text-right`}>
         {row.today}
       </span>
     </motion.div>
@@ -179,7 +179,7 @@ export const InvitePage: React.FC<InvitePageProps> = ({ onBack }) => {
         <div className="relative z-10 px-4 py-6 flex flex-col h-[100dvh]">
           {/* Header with back button */}
           <AnimationWrapper type="header">
-            <div className="flex items-center justify-center mb-[24px] relative">
+            <div className="flex items-center justify-center mb-[30px] relative">
               <div
                 className="w-9 h-9 rounded-full bg-black/50 border-[0.5px] border-[#EBC17B] flex items-center justify-center cursor-pointer absolute left-0"
                 onClick={onBack}
@@ -190,38 +190,38 @@ export const InvitePage: React.FC<InvitePageProps> = ({ onBack }) => {
                   className="w-[20px] h-[20px]"
                 />
               </div>
-              <h1 className="text-center font-inter text-[20px] font-bold leading-[24px] tracking-[-0.2px] text-[#EBC17B]">
+              <h1 className="text-center font-inter text-[20px] font-semibold leading-[24px] tracking-[-0.2px] text-[#EBC17B]">
                 Invite
               </h1>
             </div>
           </AnimationWrapper>
 
           {/* Tabs — extend to viewport edges */}
-          <AnimationWrapper delay={0.1} className="-mx-4 mb-3">
+          <AnimationWrapper delay={0.1} className="-mx-4 mb-[18px]">
             <div className="flex">
               <div
-                className={`w-1/2 text-center pb-1.5 cursor-pointer border-b-2 ${
+                className={`w-1/2 text-center pb-0.5 cursor-pointer border-b-2 ${
                   activeTab === "invite" ? "border-[#EBC17B]" : "border-transparent"
                 }`}
                 onClick={() => setActiveTab("invite")}
               >
                 <span
-                  className={`text-[15px] font-bold leading-[18px] ${
-                    activeTab === "invite" ? "text-[#EBC17B]" : "text-[#e7e7e7]"
+                  className={`text-[14px] font-extrabold leading-[17px] ${
+                    activeTab === "invite" ? "text-[#EBC17B]" : "text-[#ffffff]"
                   }`}
                 >
                   Invite
                 </span>
               </div>
               <div
-                className={`w-1/2 text-center pb-1.5 cursor-pointer border-b-2 ${
+                className={`w-1/2 text-center pb-0.5 cursor-pointer border-b-2 ${
                   activeTab === "reward" ? "border-[#EBC17B]" : "border-transparent"
                 }`}
                 onClick={() => setActiveTab("reward")}
               >
                 <span
-                  className={`text-[15px] font-bold leading-[18px] ${
-                    activeTab === "reward" ? "text-[#EBC17B]" : "text-[#e7e7e7]"
+                  className={`text-[14px] font-extrabold leading-[17px] ${
+                    activeTab === "reward" ? "text-[#EBC17B]" : "text-[#ffffff]"
                   }`}
                 >
                   Reward
@@ -231,70 +231,74 @@ export const InvitePage: React.FC<InvitePageProps> = ({ onBack }) => {
           </AnimationWrapper>
 
           {/* Table container */}
-          <AnimationWrapper delay={0.2} className="flex-1 min-h-0 mb-4">
+          <AnimationWrapper delay={0.2} className="flex-1 min-h-0 mb-3">
             <div className="bg-black/50 rounded-[16px] overflow-hidden h-full">
               {activeTab === "invite" ? (
-                <div className="h-full overflow-y-auto hide-scrollbar px-3 py-3">
-                  <div className="flex justify-between items-center mb-2 px-1">
-                    <span className="text-xs text-[#EBC17B] font-bold w-[40%]">Date</span>
-                    <span className="text-xs text-[#EBC17B] font-bold w-[40%]">Name</span>
-                    <span className="text-xs text-[#EBC17B] font-bold w-[20%] text-right">Rank</span>
+                <div className="h-full overflow-y-auto hide-scrollbar px-3 pt-2 pb-3">
+                  <div className="flex justify-between items-center mb-[4px] px-4">
+                    <span className="text-sm leading-[17px] text-[#EBC17B] font-bold w-[40%]">Date</span>
+                    <span className="text-sm leading-[17px] text-[#EBC17B] font-bold w-[40%]">Name</span>
+                    <span className="text-sm leading-[17px] text-[#EBC17B] font-bold w-[20%] text-right">Rank</span>
                   </div>
-                  {inviteRows.map((row, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 30, delay: 0.05 * index }}
-                      className="flex justify-between items-center px-1 gap-2"
-                    >
-                      <span className="text-[#EBC17B] text-[13px] font-medium tracking-[-0.5px] leading-[28px] w-[40%] whitespace-nowrap">
-                        {row.date}
-                      </span>
-                      <span className="text-[#EBC17B] text-[13px] font-medium tracking-[-0.5px] leading-[28px] w-[40%]">
-                        {row.name}
-                      </span>
-                      <span className="text-white text-[13px] font-semibold tracking-[-0.5px] leading-[28px] w-[20%] text-right">
-                        {row.rank}
-                      </span>
-                    </motion.div>
-                  ))}
+                  <div className="bg-black/60 backdrop-blur-[20px] rounded-[16px] px-4 pt-2 pb-3">
+                    {inviteRows.map((row, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 30, delay: 0.05 * index }}
+                        className="flex justify-between items-center px-1 gap-2"
+                      >
+                        <span className="text-[#EBC17B] text-[14px] font-bold leading-[30px] w-[40%] whitespace-nowrap">
+                          {row.date}
+                        </span>
+                        <span className="text-[#EBC17B] text-[14px] font-bold leading-[30px] w-[40%]">
+                          {row.name}
+                        </span>
+                        <span className="text-[#EBC17B] text-[14px] font-semibold leading-[30px] w-[20%] text-right">
+                          {row.rank}
+                        </span>
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
               ) : (
-                <div className="h-full overflow-x-auto overflow-y-auto hide-scrollbar px-3 py-3">
+                <div className="h-full overflow-x-auto overflow-y-auto hide-scrollbar px-3 pt-2 pb-3">
                   <div style={{ minWidth: ROW_TOTAL_WIDTH }}>
                     {/* Header row */}
-                    <div className="flex items-center mb-2 px-1">
-                      <span className={`text-xs text-[#EBC17B] font-bold ${COLS.name}`}>Name</span>
-                      <span className={`text-xs text-[#EBC17B] font-bold ${COLS.relation} text-center`}>Relation</span>
-                      <span className={`text-xs text-[#EBC17B] font-bold ${COLS.staking} text-center`}>Staking</span>
-                      <span className={`text-xs text-[#EBC17B] font-bold ${COLS.days} text-center`}>Days</span>
-                      <span className={`text-xs text-[#EBC17B] font-bold ${COLS.rank} text-center`}>Rank</span>
-                      <span className={`text-xs text-[#EBC17B] font-bold ${COLS.percent} text-right`}>You get (%)</span>
-                      <span className={`text-xs text-[#EBC17B] font-bold ${COLS.today} text-right`}>You get (Today)</span>
+                    <div className="flex items-center mb-[4px] px-4">
+                      <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.name}`}>Name</span>
+                      <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.relation} text-center`}>Relation</span>
+                      <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.staking} text-center`}>Staking</span>
+                      <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.days} text-center`}>Days</span>
+                      <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.rank} text-center`}>Rank</span>
+                      <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.percent} text-right`}>You get (%)</span>
+                      <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.today} text-right`}>You get (Today)</span>
                     </div>
-                    {rewardRows.map((row, index) => {
-                      const isOpen = expanded.has(index);
-                      return (
-                        <React.Fragment key={index}>
-                          <RewardRowItem
-                            row={row}
-                            expanded={isOpen}
-                            onToggle={() => toggleRow(index)}
-                            delayIndex={index}
-                          />
-                          {isOpen &&
-                            row.children?.map((child, ci) => (
-                              <RewardRowItem
-                                key={`${index}-${ci}`}
-                                row={child}
-                                isChild
-                                delayIndex={ci}
-                              />
-                            ))}
-                        </React.Fragment>
-                      );
-                    })}
+                    <div className="bg-black/60 backdrop-blur-[20px] rounded-[16px] px-4 pt-2 pb-3">
+                      {rewardRows.map((row, index) => {
+                        const isOpen = expanded.has(index);
+                        return (
+                          <React.Fragment key={index}>
+                            <RewardRowItem
+                              row={row}
+                              expanded={isOpen}
+                              onToggle={() => toggleRow(index)}
+                              delayIndex={index}
+                            />
+                            {isOpen &&
+                              row.children?.map((child, ci) => (
+                                <RewardRowItem
+                                  key={`${index}-${ci}`}
+                                  row={child}
+                                  isChild
+                                  delayIndex={ci}
+                                />
+                              ))}
+                          </React.Fragment>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
               )}
@@ -303,14 +307,14 @@ export const InvitePage: React.FC<InvitePageProps> = ({ onBack }) => {
 
           {/* Pagination — width matches table */}
           <AnimationWrapper delay={0.3}>
-            <div className="flex items-center justify-between w-full mb-4 select-none">
+            <div className="flex items-center justify-between w-full mb-3 select-none">
               <button
                 className={`p-1 ${page === 1 ? "text-[#7a7a7a]" : "text-white"}`}
                 onClick={goPrev}
                 disabled={page === 1}
                 aria-label="Previous page"
               >
-                <svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <svg width="14" height="16" viewBox="0 0 12 14" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                   <polygon points="12,0 12,14 0,7" />
                 </svg>
               </button>
@@ -318,7 +322,7 @@ export const InvitePage: React.FC<InvitePageProps> = ({ onBack }) => {
                 <button
                   key={n}
                   onClick={() => setPage(n)}
-                  className={`flex items-center justify-center text-[16px] font-semibold ${
+                  className={`flex items-center justify-center text-[20px] font-extrabold ${
                     page === n ? "text-[#EBC17B]" : "text-white"
                   }`}
                 >
@@ -331,7 +335,7 @@ export const InvitePage: React.FC<InvitePageProps> = ({ onBack }) => {
                 disabled={page === TOTAL_PAGES}
                 aria-label="Next page"
               >
-                <svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <svg width="14" height="16" viewBox="0 0 12 14" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                   <polygon points="0,0 0,14 12,7" />
                 </svg>
               </button>
@@ -342,7 +346,7 @@ export const InvitePage: React.FC<InvitePageProps> = ({ onBack }) => {
           <AnimationWrapper type="button" delay={0.4}>
             <button
               onClick={() => setShowInviteModal(true)}
-              className="gold-gradient w-full rounded-full h-[64px] text-[18px] font-semibold text-white mb-6"
+              className="gold-gradient w-full rounded-full h-[64px] text-[18px] font-semibold text-white mb-[82px]"
             >
               Refer a Friend
             </button>
