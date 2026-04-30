@@ -1,0 +1,73 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@utility gold-gradient {
+  background: linear-gradient(88deg, #D09635 4.35%, #E5B057 18.75%, #D28E1F 35.38%, #AD7211 65.92%, #E5B057 83.64%, #D09635 96.49%);
+  border-radius: 62px;
+}
+
+@utility gold-text {
+  background: linear-gradient(180deg, #FFC300 0%, #CC9C00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility ugold-text {
+  color: #EBC17B;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+.gold-gradient-text {
+  background: linear-gradient(180deg, #FFD083 29.33%, #FFDA9E 48.56%, #5B4A2E 87.98%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: Inter, sans-serif;
+  font-size: 40px;
+  font-style: normal;
+  line-height: 47px;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: -2px;
+}
+
+/* Gold gradient for buttons */
+
+
+.gold-gradient:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.gold-gradient:active {
+  transform: translateY(1px);
+}
+
+/* Gold gradient text */
+.gold-gradient-text {
+  background: linear-gradient(90deg, #D09635 0%, #FFCB6B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Hide scrollbar but allow scrolling */
+@utility hide-scrollbar {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
