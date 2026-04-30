@@ -66,7 +66,7 @@ const RewardRowItem: React.FC<RewardRowProps> = ({ row, isChild, expanded, onTog
       transition={{ type: "spring", stiffness: 300, damping: 30, delay: 0.04 * delayIndex }}
       className="flex items-center px-1"
     >
-      <span className={`text-[#EBC17B] text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.name} ${isChild ? "pl-3" : ""}`}>
+      <span className={`text-[#EBC17B] text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.name}`}>
         {row.name}
       </span>
       <span className={`text-[#EBC17B] text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.relation} flex justify-start`}>
