@@ -78,6 +78,10 @@ const RewardRowItem: React.FC<RewardRowProps> = ({ row, isChild, expanded, onTog
           >
             {expanded ? <TriangleRight /> : <TriangleDown />}
           </button>
+        ) : isChild ? (
+          <span className="flex items-center justify-center w-3 h-6">
+            <TriangleRight />
+          </span>
         ) : (
           <span />
         )}
