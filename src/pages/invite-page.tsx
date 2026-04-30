@@ -69,11 +69,11 @@ const RewardRowItem: React.FC<RewardRowProps> = ({ row, isChild, expanded, onTog
       <span className={`text-[#EBC17B] text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.name} ${isChild ? "pl-3" : ""}`}>
         {row.name}
       </span>
-      <span className={`text-[#EBC17B] text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.relation} flex justify-center`}>
+      <span className={`text-[#EBC17B] text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.relation} flex justify-start`}>
         {hasChildren ? (
           <button
             onClick={onToggle}
-            className="flex items-center justify-center w-6 h-6"
+            className="flex items-center justify-center w-3 h-6"
             aria-label={expanded ? "Collapse" : "Expand"}
           >
             {expanded ? <TriangleRight /> : <TriangleDown />}
@@ -268,7 +268,7 @@ export const InvitePage: React.FC<InvitePageProps> = ({ onBack }) => {
                     {/* Header row */}
                     <div className="flex items-center mb-[4px] px-4">
                       <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.name}`}>Name</span>
-                      <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.relation} text-center`}>Relation</span>
+                      <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.relation} text-start`}>Relation</span>
                       <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.staking} text-center`}>Staking</span>
                       <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.days} text-center`}>Days</span>
                       <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.rank} text-center`}>Rank</span>
