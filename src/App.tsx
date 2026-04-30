@@ -12,6 +12,7 @@ import { Wallet } from "./pages/wallet";
 import { Other } from "./pages/other";
 import { ProfilePage } from "./pages/profile-page";
 import { HistoryPage } from "./pages/history-page";
+import { InvitePage } from "./pages/invite-page";
 import { LanguagePage } from "./pages/language-page";
 import { UsernamePage } from "./pages/username-page";
 import { PersonalInformationPage } from "./pages/personal-information-page";
@@ -80,6 +81,8 @@ export default function App() {
         return <ProfilePage onBack={() => handleNavigation("other")} onNavigate={handleNavigation} />;
       case "history":
         return <HistoryPage onBack={() => handleNavigation("other")} />;
+      case "invite":
+        return <InvitePage onBack={() => handleNavigation("other")} />;
       case "language":
         return <LanguagePage onBack={() => handleNavigation("other")} />;
       case "username":

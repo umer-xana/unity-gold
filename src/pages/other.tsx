@@ -2,7 +2,6 @@ import React from "react";
 import { Icon } from "@iconify/react";
 import { BottomNavigation } from "../components/bottom-navigation";
 import { CurrencyToggle } from "../components/currency-toggle";
-import { InviteModal } from "../components/invite-modal";
 import { LogoutModal } from "../components/logout-modal";
 import { AnimationWrapper } from "../components/animation-wrapper";
 import { motion } from "framer-motion";
@@ -38,7 +37,6 @@ interface OtherProps {
 }
 
 export const Other: React.FC<OtherProps> = ({ onNavigate }) => {
-  const [showInviteModal, setShowInviteModal] = React.useState(false);
   const [showLogoutModal, setShowLogoutModal] = React.useState(false);
 
   const handleMenuItemClick = (item: string) => {
@@ -50,7 +48,7 @@ export const Other: React.FC<OtherProps> = ({ onNavigate }) => {
         onNavigate("history");
         break;
       case "Invite":
-        setShowInviteModal(true);
+        onNavigate("invite");
         break;
       case "Language":
         onNavigate("language");
@@ -182,8 +180,7 @@ export const Other: React.FC<OtherProps> = ({ onNavigate }) => {
         </div>
         
         {/* Modals */}
-        {showInviteModal && <InviteModal onClose={() => setShowInviteModal(false)} />}
-        {showLogoutModal && <LogoutModal 
+        {showLogoutModal && <LogoutModal
           onClose={() => setShowLogoutModal(false)} 
           onLogout={() => console.log("Logout")} 
         />}
