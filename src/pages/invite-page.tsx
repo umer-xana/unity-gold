@@ -38,16 +38,16 @@ const TriangleRight: React.FC = () => (
 );
 
 const COLS = {
-  name:     "min-w-[100px] w-[100px] shrink-0",
+  name:     "min-w-[110px] w-[110px] shrink-0",
   relation: "min-w-[80px] w-[80px] shrink-0",
-  staking:  "min-w-[100px] w-[100px] shrink-0",
+  staking:  "min-w-[80px] w-[80px] shrink-0",
   days:     "min-w-[80px] w-[80px] shrink-0",
   rank:     "min-w-[70px] w-[70px] shrink-0",
-  percent:  "min-w-[100px] w-[100px] shrink-0",
-  today:    "min-w-[110px] w-[110px] shrink-0",
+  percent:  "min-w-[110px] w-[110px] shrink-0",
+  today:    "min-w-[120px] w-[120px] shrink-0",
 };
 
-const ROW_TOTAL_WIDTH = 100 + 80 + 100 + 80 + 70 + 100 + 110; // 640px
+const ROW_TOTAL_WIDTH = 110 + 80 + 80 + 80 + 70 + 110 + 120 + 32; // 640px
 
 interface RewardRowProps {
   row: RewardRow;
@@ -64,7 +64,7 @@ const RewardRowItem: React.FC<RewardRowProps> = ({ row, isChild, expanded, onTog
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 30, delay: 0.04 * delayIndex }}
-      className="flex items-center px-1"
+      className="flex items-center px-0"
     >
       <span className={`text-[#EBC17B] text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.name}`}>
         {row.name}
@@ -95,7 +95,7 @@ const RewardRowItem: React.FC<RewardRowProps> = ({ row, isChild, expanded, onTog
       <span className={`text-[#EBC17B] text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.rank} text-center`}>
         {row.rank}
       </span>
-      <span className={`text-[#EBC17B] text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.percent} text-right`}>
+      <span className={`text-[#EBC17B] text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.percent} text-center`}>
         {row.percent}
       </span>
       <span className={`text-white text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.today} text-right`}>
@@ -251,7 +251,7 @@ export const InvitePage: React.FC<InvitePageProps> = ({ onBack }) => {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ type: "spring", stiffness: 300, damping: 30, delay: 0.05 * index }}
-                        className="flex justify-between items-center px-1 gap-2"
+                        className="flex justify-between items-center px-0 gap-2"
                       >
                         <span className="text-[#EBC17B] text-[14px] font-bold leading-[30px] w-[40%] whitespace-nowrap">
                           {row.date}
@@ -276,7 +276,7 @@ export const InvitePage: React.FC<InvitePageProps> = ({ onBack }) => {
                       <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.staking} text-center`}>Staking</span>
                       <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.days} text-center`}>Days</span>
                       <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.rank} text-center`}>Rank</span>
-                      <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.percent} text-right`}>You get (%)</span>
+                      <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.percent} text-center`}>You get (%)</span>
                       <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.today} text-right`}>You get (Today)</span>
                     </div>
                     <div className="bg-black/60 backdrop-blur-[20px] rounded-[16px] px-4 pt-2 pb-3">
