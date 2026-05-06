@@ -1,10 +1,12 @@
 import React from "react";
 import { AnimationWrapper } from "../components/animation-wrapper";
+import { AnimatedNumber } from "../components/animated-number";
 import { InviteModal } from "../components/invite-modal";
 import { motion } from "framer-motion";
 
 interface InvitePageProps {
   onBack: () => void;
+  onNavigate?: (page: string) => void;
 }
 
 interface InviteRow {
@@ -24,6 +26,8 @@ interface RewardRow {
 }
 
 const TOTAL_PAGES = 9;
+const INITIAL_CLAIMABLE_REWARD = 25.5;
+const REFERRAL_OZ_PER_USD = 1 / 2400;
 
 const TriangleDown: React.FC = () => (
   <svg width="11" height="8" viewBox="0 0 11 8" xmlns="http://www.w3.org/2000/svg">
@@ -105,11 +109,12 @@ const RewardRowItem: React.FC<RewardRowProps> = ({ row, isChild, expanded, onTog
   );
 };
 
-export const InvitePage: React.FC<InvitePageProps> = ({ onBack }) => {
+export const InvitePage: React.FC<InvitePageProps> = ({ onBack, onNavigate }) => {
   const [activeTab, setActiveTab] = React.useState<"invite" | "reward">("invite");
   const [page, setPage] = React.useState(2);
   const [showInviteModal, setShowInviteModal] = React.useState(false);
   const [expanded, setExpanded] = React.useState<Set<number>>(new Set());
+  const [claimableReward] = React.useState<number>(INITIAL_CLAIMABLE_REWARD);
 
   const inviteRows: InviteRow[] = [
     { date: "12.21 00:00", name: "UserName", rank: "V1" },
@@ -165,6 +170,8 @@ export const InvitePage: React.FC<InvitePageProps> = ({ onBack }) => {
 
   const goPrev = () => setPage((p) => Math.max(1, p - 1));
   const goNext = () => setPage((p) => Math.min(TOTAL_PAGES, p + 1));
+
+  const claimableOz = claimableReward * REFERRAL_OZ_PER_USD;
 
   return (
     <div className="dark min-h-screen bg-background text-foreground">
@@ -233,6 +240,27 @@ export const InvitePage: React.FC<InvitePageProps> = ({ onBack }) => {
               </div>
             </div>
           </AnimationWrapper>
+
+          {/* Claimable Referral Reward card — reward tab only */}
+          {activeTab === "reward" && (
+            <AnimationWrapper delay={0.15} className="mb-[14px]">
+              <div className="bg-black/50 rounded-[16px] px-6 pt-2.5 pb-4">
+                <span className="text-xs -mb-[20px] mt-[4px] block ugold-text text-left">
+                  Claimable Referral Reward
+                </span>
+                <h2 className="gold-gradient-text text-right mb-[6px] font-inter text-[40px] font-semibold leading-[47px] tracking-[-1.25px]">
+                  <span className="text-[25px] leading-[40px]">$ </span>
+                  <AnimatedNumber value={claimableReward} decimals={2} />
+                </h2>
+                <div className="border-t-[0.5px] border-[#FFD185] pt-[7px]"></div>
+                <div className="flex justify-end items-center">
+                  <p className="text-[16px] font-semibold ugold-text leading-[20px]">
+                    <AnimatedNumber value={claimableOz} decimals={6} suffix=" oz" />
+                  </p>
+                </div>
+              </div>
+            </AnimationWrapper>
+          )}
 
           {/* Table container */}
           <AnimationWrapper delay={0.2} className="flex-1 min-h-0 mb-3">
@@ -346,14 +374,23 @@ export const InvitePage: React.FC<InvitePageProps> = ({ onBack }) => {
             </div>
           </AnimationWrapper>
 
-          {/* Refer a Friend Button — 24px above bottom */}
+          {/* Bottom action — Refer a Friend (invite tab) / Claim Referral Reward (reward tab) */}
           <AnimationWrapper type="button" delay={0.4}>
-            <button
-              onClick={() => setShowInviteModal(true)}
-              className="gold-gradient w-full rounded-full h-[64px] text-[18px] font-semibold text-white mb-[82px]"
-            >
-              Refer a Friend
-            </button>
+            {activeTab === "invite" ? (
+              <button
+                onClick={() => setShowInviteModal(true)}
+                className="gold-gradient w-full rounded-full h-[64px] text-[18px] font-semibold text-white mb-[82px]"
+              >
+                Refer a Friend
+              </button>
+            ) : (
+              <button
+                onClick={() => onNavigate?.("claim-referral")}
+                className="gold-gradient w-full rounded-full h-[64px] text-[18px] font-semibold text-white mb-[82px]"
+              >
+                Claim Referral Reward
+              </button>
+            )}
           </AnimationWrapper>
         </div>
 
@@ -364,3 +401,5 @@ export const InvitePage: React.FC<InvitePageProps> = ({ onBack }) => {
     </div>
   );
 };
+
+export default InvitePage;

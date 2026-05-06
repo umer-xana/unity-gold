@@ -13,6 +13,7 @@ import { Other } from "./pages/other";
 import { ProfilePage } from "./pages/profile-page";
 import { HistoryPage } from "./pages/history-page";
 import { InvitePage } from "./pages/invite-page";
+import { ClaimReferralPage } from "./pages/claim-referral-page";
 import { LanguagePage } from "./pages/language-page";
 import { UsernamePage } from "./pages/username-page";
 import { PersonalInformationPage } from "./pages/personal-information-page";
@@ -82,7 +83,9 @@ export default function App() {
       case "history":
         return <HistoryPage onBack={() => handleNavigation("other")} />;
       case "invite":
-        return <InvitePage onBack={() => handleNavigation("other")} />;
+        return <InvitePage onBack={() => handleNavigation("other")} onNavigate={handleNavigation} />;
+      case "claim-referral":
+        return <ClaimReferralPage onBack={() => handleNavigation("invite")} />;
       case "language":
         return <LanguagePage onBack={() => handleNavigation("other")} />;
       case "username":
