@@ -12,16 +12,13 @@ interface InvitePageProps {
 interface InviteRow {
   date: string;
   name: string;
-  rank: string;
 }
 
 interface RewardRow {
   name: string;
+  tier: string;
   staking: string;
   days: string;
-  rank: string;
-  percent: string;
-  today: string;
   children?: RewardRow[];
 }
 
@@ -42,27 +39,21 @@ const TriangleRight: React.FC = () => (
 );
 
 const COLS = {
-  name:     "min-w-[110px] w-[110px] shrink-0",
-  relation: "min-w-[80px] w-[80px] shrink-0",
-  staking:  "min-w-[80px] w-[80px] shrink-0",
-  days:     "min-w-[80px] w-[80px] shrink-0",
-  rank:     "min-w-[70px] w-[70px] shrink-0",
-  percent:  "min-w-[110px] w-[110px] shrink-0",
-  today:    "min-w-[120px] w-[120px] shrink-0",
+  name:    "w-[34%] shrink-0",
+  tier:    "w-[20%] shrink-0",
+  staking: "w-[30%] shrink-0",
+  days:    "w-[16%] shrink-0",
 };
-
-const ROW_TOTAL_WIDTH = 110 + 80 + 80 + 80 + 70 + 110 + 120 + 32; // 640px
 
 interface RewardRowProps {
   row: RewardRow;
-  isChild?: boolean;
   expanded?: boolean;
   onToggle?: () => void;
   delayIndex: number;
 }
 
-const RewardRowItem: React.FC<RewardRowProps> = ({ row, isChild, expanded, onToggle, delayIndex }) => {
-  const hasChildren = !isChild && row.children && row.children.length > 0;
+const RewardRowItem: React.FC<RewardRowProps> = ({ row, expanded, onToggle, delayIndex }) => {
+  const hasChildren = !!row.children && row.children.length > 0;
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -73,8 +64,8 @@ const RewardRowItem: React.FC<RewardRowProps> = ({ row, isChild, expanded, onTog
       <span className={`text-[#EBC17B] text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.name}`}>
         {row.name}
       </span>
-      <span className={`text-[#EBC17B] text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.relation} flex justify-start`}>
-        {hasChildren ? (
+      <span className={`text-[#EBC17B] text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.tier} flex items-center gap-1`}>
+        {hasChildren && (
           <button
             onClick={onToggle}
             className="flex items-center justify-center w-3 h-6"
@@ -82,28 +73,14 @@ const RewardRowItem: React.FC<RewardRowProps> = ({ row, isChild, expanded, onTog
           >
             {expanded ? <TriangleRight /> : <TriangleDown />}
           </button>
-        ) : isChild ? (
-          <span className="flex items-center justify-center w-3 h-6">
-            <TriangleRight />
-          </span>
-        ) : (
-          <span />
         )}
+        <span>{row.tier}</span>
       </span>
       <span className={`text-white text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.staking} text-center`}>
         {row.staking}
       </span>
-      <span className={`text-[#EBC17B] text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.days} text-center`}>
+      <span className={`text-[#EBC17B] text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.days} text-right`}>
         {row.days}
-      </span>
-      <span className={`text-[#EBC17B] text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.rank} text-center`}>
-        {row.rank}
-      </span>
-      <span className={`text-[#EBC17B] text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.percent} text-center`}>
-        {row.percent}
-      </span>
-      <span className={`text-white text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.today} text-right`}>
-        {row.today}
       </span>
     </motion.div>
   );
@@ -113,60 +90,83 @@ export const InvitePage: React.FC<InvitePageProps> = ({ onBack, onNavigate }) =>
   const [activeTab, setActiveTab] = React.useState<"invite" | "reward">("invite");
   const [page, setPage] = React.useState(2);
   const [showInviteModal, setShowInviteModal] = React.useState(false);
-  const [expanded, setExpanded] = React.useState<Set<number>>(new Set());
+  const [expanded, setExpanded] = React.useState<Set<string>>(new Set());
   const [claimableReward] = React.useState<number>(INITIAL_CLAIMABLE_REWARD);
 
   const inviteRows: InviteRow[] = [
-    { date: "12.21 00:00", name: "UserName", rank: "V1" },
-    { date: "12.21 00:00", name: "UserName", rank: "V3" },
-    { date: "12.21 00:00", name: "UserName", rank: "V1" },
-    { date: "12.21 00:00", name: "UserName", rank: "V3" },
-    { date: "12.21 00:00", name: "UserName", rank: "V1" },
-    { date: "12.21 00:00", name: "UserName", rank: "V3" },
-    { date: "12.21 00:00", name: "UserName", rank: "V1" },
-    { date: "12.21 00:00", name: "UserName", rank: "V3" },
-    { date: "12.21 00:00", name: "UserName", rank: "V1" },
-    { date: "12.21 00:00", name: "UserName", rank: "V3" },
+    { date: "2026-05-07 09:15", name: "UserName" },
+    { date: "2026-05-06 18:42", name: "UserName" },
+    { date: "2026-05-05 22:08", name: "UserName" },
+    { date: "2026-05-05 11:30", name: "UserName" },
+    { date: "2026-05-04 14:55", name: "UserName" },
+    { date: "2026-05-03 08:20", name: "UserName" },
+    { date: "2026-05-02 17:00", name: "UserName" },
+    { date: "2026-05-01 10:11", name: "UserName" },
+    { date: "2026-04-30 19:47", name: "UserName" },
+    { date: "2026-04-29 13:05", name: "UserName" },
   ];
 
   const rewardRows: RewardRow[] = [
     {
-      name: "UserName", staking: "$100", days: "60", rank: "V1", percent: "0.01%", today: "$100",
+      name: "UserName", tier: "1", staking: "100", days: "60",
       children: [
-        { name: "Sub User A1", staking: "$50", days: "30", rank: "V2", percent: "0.005%", today: "$50" },
-        { name: "Sub User A2", staking: "$25", days: "15", rank: "V1", percent: "0.003%", today: "$25" },
+        {
+          name: "Sub User A1", tier: "2", staking: "50", days: "30",
+          children: [
+            { name: "Sub User A1.1", tier: "3", staking: "20", days: "12" },
+            { name: "Sub User A1.2", tier: "3", staking: "10", days: "6" },
+          ],
+        },
+        { name: "Sub User A2", tier: "2", staking: "25", days: "15" },
       ],
     },
+    { name: "UserName", tier: "1", staking: "100", days: "30" },
     {
-      name: "UserName", staking: "$100", days: "30", rank: "V3", percent: "0.01%", today: "$100",
+      name: "UserName", tier: "1", staking: "100", days: "90",
       children: [
-        { name: "Sub User B1", staking: "$60", days: "20", rank: "V1", percent: "0.004%", today: "$30" },
+        { name: "Sub User C1", tier: "2", staking: "40", days: "20" },
+        { name: "Sub User C2", tier: "2", staking: "30", days: "10" },
       ],
     },
+    { name: "UserName", tier: "1", staking: "100", days: "" },
     {
-      name: "UserName", staking: "$100", days: "90", rank: "V1", percent: "0.01%", today: "$100",
+      name: "UserName", tier: "1", staking: "100", days: "",
       children: [
-        { name: "Sub User C1", staking: "$40", days: "10", rank: "V2", percent: "0.002%", today: "$20" },
-        { name: "Sub User C2", staking: "$35", days: "8",  rank: "V1", percent: "0.001%", today: "$10" },
-        { name: "Sub User C3", staking: "$20", days: "5",  rank: "V1", percent: "0.001%", today: "$5"  },
+        { name: "Sub User E1", tier: "2", staking: "60", days: "25" },
       ],
     },
-    { name: "UserName", staking: "$100", days: "",  rank: "V3", percent: "0.01%", today: "$100" },
-    { name: "UserName", staking: "$100", days: "",  rank: "V1", percent: "0.01%", today: "$100" },
-    { name: "UserName", staking: "",     days: "",  rank: "V3", percent: "0.01%", today: "" },
-    { name: "UserName", staking: "",     days: "",  rank: "V1", percent: "0.01%", today: "" },
-    { name: "UserName", staking: "",     days: "",  rank: "V3", percent: "0.01%", today: "" },
-    { name: "UserName", staking: "",     days: "",  rank: "V1", percent: "0.01%", today: "" },
-    { name: "UserName", staking: "",     days: "",  rank: "V3", percent: "0.01%", today: "" },
+    { name: "UserName", tier: "1", staking: "",    days: "" },
+    { name: "UserName", tier: "1", staking: "",    days: "" },
+    { name: "UserName", tier: "1", staking: "",    days: "" },
+    { name: "UserName", tier: "1", staking: "",    days: "" },
+    { name: "UserName", tier: "1", staking: "",    days: "" },
   ];
 
-  const toggleRow = (i: number) =>
+  const toggleRow = (path: string) =>
     setExpanded((prev) => {
       const next = new Set(prev);
-      if (next.has(i)) next.delete(i);
-      else next.add(i);
+      if (next.has(path)) next.delete(path);
+      else next.add(path);
       return next;
     });
+
+  const renderRowTree = (row: RewardRow, path: string, delayIndex: number): React.ReactNode => {
+    const isOpen = expanded.has(path);
+    return (
+      <React.Fragment key={path}>
+        <RewardRowItem
+          row={row}
+          expanded={isOpen}
+          onToggle={() => toggleRow(path)}
+          delayIndex={delayIndex}
+        />
+        {isOpen &&
+          row.children?.map((child, ci) =>
+            renderRowTree(child, `${path}-${ci}`, ci)
+          )}
+      </React.Fragment>
+    );
+  };
 
   const goPrev = () => setPage((p) => Math.max(1, p - 1));
   const goNext = () => setPage((p) => Math.min(TOTAL_PAGES, p + 1));
@@ -245,17 +245,17 @@ export const InvitePage: React.FC<InvitePageProps> = ({ onBack, onNavigate }) =>
           {activeTab === "reward" && (
             <AnimationWrapper delay={0.15} className="mb-[14px]">
               <div className="bg-black/50 rounded-[16px] px-6 pt-2.5 pb-4">
-                <span className="text-xs -mb-[20px] mt-[4px] block ugold-text text-left">
+                <span className="text-xs mb-[0px] mt-[4px] block ugold-text text-left">
                   Claimable Referral Reward
                 </span>
                 <h2 className="gold-gradient-text text-right mb-[6px] font-inter text-[40px] font-semibold leading-[47px] tracking-[-1.25px]">
-                  <span className="text-[25px] leading-[40px]">$ </span>
-                  <AnimatedNumber value={claimableReward} decimals={2} />
+                  <AnimatedNumber value={claimableOz} decimals={6} />
+                  <span className="text-[25px] leading-[40px]"> Oz</span>
                 </h2>
                 <div className="border-t-[0.5px] border-[#FFD185] pt-[7px]"></div>
                 <div className="flex justify-end items-center">
-                  <p className="text-[16px] font-semibold ugold-text leading-[20px]">
-                    <AnimatedNumber value={claimableOz} decimals={6} suffix=" oz" />
+                  <p className="text-[13px] font-semibold text-[#c9c9c9] leading-[16px]">
+                    ≈ $<AnimatedNumber value={claimableReward} decimals={2} />
                   </p>
                 </div>
               </div>
@@ -268,9 +268,8 @@ export const InvitePage: React.FC<InvitePageProps> = ({ onBack, onNavigate }) =>
               {activeTab === "invite" ? (
                 <div className="h-full overflow-y-auto hide-scrollbar px-3 pt-2 pb-3">
                   <div className="flex justify-between items-center mb-[4px] px-4">
-                    <span className="text-sm leading-[17px] text-[#EBC17B] font-bold w-[40%]">Date</span>
-                    <span className="text-sm leading-[17px] text-[#EBC17B] font-bold w-[40%]">Name</span>
-                    <span className="text-sm leading-[17px] text-[#EBC17B] font-bold w-[20%] text-right">Rank</span>
+                    <span className="text-sm leading-[17px] text-[#EBC17B] font-bold w-[60%]">Date</span>
+                    <span className="text-sm leading-[17px] text-[#EBC17B] font-bold w-[40%] text-right">Name</span>
                   </div>
                   <div className="bg-black/60 backdrop-blur-[20px] rounded-[16px] px-4 pt-2 pb-3">
                     {inviteRows.map((row, index) => (
@@ -281,55 +280,30 @@ export const InvitePage: React.FC<InvitePageProps> = ({ onBack, onNavigate }) =>
                         transition={{ type: "spring", stiffness: 300, damping: 30, delay: 0.05 * index }}
                         className="flex justify-between items-center px-0 gap-2"
                       >
-                        <span className="text-[#EBC17B] text-[14px] font-bold leading-[30px] w-[40%] whitespace-nowrap">
+                        <span className="text-[#EBC17B] text-[14px] font-bold leading-[30px] w-[60%] whitespace-nowrap">
                           {row.date}
                         </span>
-                        <span className="text-[#EBC17B] text-[14px] font-bold leading-[30px] w-[40%]">
+                        <span className="text-[#EBC17B] text-[14px] font-bold leading-[30px] w-[40%] text-right">
                           {row.name}
-                        </span>
-                        <span className="text-[#EBC17B] text-[14px] font-semibold leading-[30px] w-[20%] text-right">
-                          {row.rank}
                         </span>
                       </motion.div>
                     ))}
                   </div>
                 </div>
               ) : (
-                <div className="h-full overflow-x-auto overflow-y-auto hide-scrollbar px-3 pt-2 pb-3">
-                  <div style={{ minWidth: ROW_TOTAL_WIDTH }}>
+                <div className="h-full overflow-y-auto hide-scrollbar px-3 pt-2 pb-3">
+                  <div>
                     {/* Header row */}
                     <div className="flex items-center mb-[4px] px-4">
                       <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.name}`}>Name</span>
-                      <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.relation} text-start`}>Relation</span>
-                      <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.staking} text-center`}>Staking</span>
-                      <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.days} text-center`}>Days</span>
-                      <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.rank} text-center`}>Rank</span>
-                      <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.percent} text-center`}>You get (%)</span>
-                      <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.today} text-right`}>You get (Today)</span>
+                      <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.tier}`}>Tier</span>
+                      <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold whitespace ${COLS.staking} text-center`}>Staking (UGOLD)</span>
+                      <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.days} text-right`}>Days</span>
                     </div>
                     <div className="bg-black/60 backdrop-blur-[20px] rounded-[16px] px-4 pt-2 pb-3">
-                      {rewardRows.map((row, index) => {
-                        const isOpen = expanded.has(index);
-                        return (
-                          <React.Fragment key={index}>
-                            <RewardRowItem
-                              row={row}
-                              expanded={isOpen}
-                              onToggle={() => toggleRow(index)}
-                              delayIndex={index}
-                            />
-                            {isOpen &&
-                              row.children?.map((child, ci) => (
-                                <RewardRowItem
-                                  key={`${index}-${ci}`}
-                                  row={child}
-                                  isChild
-                                  delayIndex={ci}
-                                />
-                              ))}
-                          </React.Fragment>
-                        );
-                      })}
+                      {rewardRows.map((row, index) =>
+                        renderRowTree(row, String(index), index)
+                      )}
                     </div>
                   </div>
                 </div>

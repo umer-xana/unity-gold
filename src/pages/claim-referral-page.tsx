@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { Button, Drawer, DrawerContent, DrawerHeader, DrawerBody } from "@heroui/react";
 import { AnimationWrapper } from "../components/animation-wrapper";
 import { AnimatedNumber } from "../components/animated-number";
+import { CurrencyToggle } from "../components/currency-toggle";
+import { useCurrency } from "../context/currency-context";
 
 interface ClaimReferralPageProps {
   onBack: () => void;
@@ -11,35 +13,98 @@ interface ClaimReferralPageProps {
 interface RewardBreakdownEntry {
   name: string;
   rank: string;
-  amount: number;
-  percent: string;
+  stakingDate: string;
+  stakingAmountUgold: number;
+  firstRewardDate: string;
+  nextRewardDate: string;
+  lastRewardDate: string;
+  totalRewardsUgold: number;
+  nextRewardAmountUgold: number;
+  remainingRewardsUgold: number;
 }
 
-const INITIAL_CLAIMABLE_REWARD = 25.5;
+const INITIAL_CLAIMABLE_REWARD_USD = 25.5;
 const REFERRAL_OZ_PER_USD = 1 / 2400;
+const FIXED_FEE_OZ = 0.00001;
+const MIN_CLAIM_OZ = 1;
 
 const initialBreakdown: RewardBreakdownEntry[] = [
-  { name: "UserName 1", rank: "V1", amount: 8.0,  percent: "0.01%" },
-  { name: "UserName 2", rank: "V3", amount: 6.5,  percent: "0.01%" },
-  { name: "UserName 3", rank: "V1", amount: 4.25, percent: "0.005%" },
-  { name: "UserName 4", rank: "V2", amount: 3.75, percent: "0.005%" },
-  { name: "UserName 5", rank: "V1", amount: 3.0,  percent: "0.003%" },
+  {
+    name: "UserName 1", rank: "V1",
+    stakingDate: "2026-04-01 09:30",
+    stakingAmountUgold: 0.0420,
+    firstRewardDate: "2026-04-08",
+    nextRewardDate: "2026-05-15",
+    lastRewardDate: "2026-04-30",
+    totalRewardsUgold: 0.003333,
+    nextRewardAmountUgold: 0.000833,
+    remainingRewardsUgold: 0.002500,
+  },
+  {
+    name: "UserName 2", rank: "V3",
+    stakingDate: "2026-04-05 14:12",
+    stakingAmountUgold: 0.0271,
+    firstRewardDate: "2026-04-12",
+    nextRewardDate: "2026-05-12",
+    lastRewardDate: "2026-05-02",
+    totalRewardsUgold: 0.002708,
+    nextRewardAmountUgold: 0.000700,
+    remainingRewardsUgold: 0.001950,
+  },
+  {
+    name: "UserName 3", rank: "V1",
+    stakingDate: "2026-04-10 18:45",
+    stakingAmountUgold: 0.0177,
+    firstRewardDate: "2026-04-17",
+    nextRewardDate: "2026-05-17",
+    lastRewardDate: "2026-05-04",
+    totalRewardsUgold: 0.001770,
+    nextRewardAmountUgold: 0.000420,
+    remainingRewardsUgold: 0.001100,
+  },
+  {
+    name: "UserName 4", rank: "V2",
+    stakingDate: "2026-04-15 11:20",
+    stakingAmountUgold: 0.0156,
+    firstRewardDate: "2026-04-22",
+    nextRewardDate: "2026-05-22",
+    lastRewardDate: "2026-05-05",
+    totalRewardsUgold: 0.001562,
+    nextRewardAmountUgold: 0.000390,
+    remainingRewardsUgold: 0.000950,
+  },
+  {
+    name: "UserName 5", rank: "V1",
+    stakingDate: "2026-04-22 08:05",
+    stakingAmountUgold: 0.0125,
+    firstRewardDate: "2026-04-29",
+    nextRewardDate: "2026-05-29",
+    lastRewardDate: "2026-05-06",
+    totalRewardsUgold: 0.001250,
+    nextRewardAmountUgold: 0.000312,
+    remainingRewardsUgold: 0.000820,
+  },
 ];
 
 export const ClaimReferralPage: React.FC<ClaimReferralPageProps> = ({ onBack }) => {
-  const [claimableReward, setClaimableReward] = React.useState<number>(INITIAL_CLAIMABLE_REWARD);
+  const { currency } = useCurrency();
+  const [claimableUsd, setClaimableUsd] = React.useState<number>(INITIAL_CLAIMABLE_REWARD_USD);
   const [breakdown, setBreakdown] = React.useState<RewardBreakdownEntry[]>(initialBreakdown);
   const [claimAmount, setClaimAmount] = React.useState<string>("");
   const [isClaiming, setIsClaiming] = React.useState(false);
-  const [claimSuccess, setClaimSuccess] = React.useState<{ open: boolean; amount: number }>({ open: false, amount: 0 });
+  const [claimSuccess, setClaimSuccess] = React.useState<{ open: boolean; ugold: number }>({ open: false, ugold: 0 });
 
-  const claimableOz = claimableReward * REFERRAL_OZ_PER_USD;
+  const claimableUgold = claimableUsd * REFERRAL_OZ_PER_USD;
   const parsedAmount = parseFloat(claimAmount);
-  const isAmountValid =
-    !isNaN(parsedAmount) && parsedAmount > 0 && parsedAmount <= claimableReward;
+  const hasAmount = !isNaN(parsedAmount) && parsedAmount > 0;
+  const belowMinimum = hasAmount && parsedAmount < MIN_CLAIM_OZ;
+  const isAmountValid = hasAmount && !belowMinimum && parsedAmount <= claimableUgold;
+
+  const feeOz = FIXED_FEE_OZ;
+  const receiveOz = isAmountValid && parsedAmount > FIXED_FEE_OZ ? parsedAmount - FIXED_FEE_OZ : 0;
 
   const handleSetMax = () => {
-    if (claimableReward > 0) setClaimAmount(claimableReward.toFixed(2));
+    if (claimableUgold > 0) setClaimAmount(claimableUgold.toFixed(6));
   };
 
   const handleAmountChange = (value: string) => {
@@ -49,16 +114,17 @@ export const ClaimReferralPage: React.FC<ClaimReferralPageProps> = ({ onBack }) 
   };
 
   const handleClaim = async () => {
-    if (claimableReward <= 0 || !isAmountValid) return;
+    if (claimableUgold <= 0 || !isAmountValid) return;
     setIsClaiming(true);
     try {
-      const claimedAmount = parsedAmount;
-      setClaimableReward((prev) => Math.max(0, prev - claimedAmount));
-      if (claimedAmount >= claimableReward) {
+      const claimedUgold = parsedAmount;
+      const claimedUsd = claimedUgold / REFERRAL_OZ_PER_USD;
+      setClaimableUsd((prev) => Math.max(0, prev - claimedUsd));
+      if (claimedUgold >= claimableUgold) {
         setBreakdown([]);
       }
       setClaimAmount("");
-      setClaimSuccess({ open: true, amount: claimedAmount });
+      setClaimSuccess({ open: true, ugold: Math.max(0, claimedUgold - FIXED_FEE_OZ) });
     } finally {
       setIsClaiming(false);
     }
@@ -95,41 +161,60 @@ export const ClaimReferralPage: React.FC<ClaimReferralPageProps> = ({ onBack }) 
               <h1 className="text-center font-inter text-[20px] font-semibold leading-[24px] tracking-[-0.2px] text-[#EBC17B]">
                 Claim Referral Reward
               </h1>
+              <div className="absolute right-0">
+                <CurrencyToggle />
+              </div>
             </div>
           </AnimationWrapper>
 
-          {/* Claimable Referral Reward card */}
-          <AnimationWrapper delay={0.15} className="mb-6">
+          {/* Claimable Referral Reward card — UGOLD primary, USD secondary */}
+          <AnimationWrapper delay={0.15} className="mb-5">
             <div className="bg-black/50 rounded-[16px] px-6 pt-2.5 pb-4">
               <span className="text-xs mt-[4px] block ugold-text text-left">
                 Claimable Referral Reward
               </span>
               <h2 className="gold-gradient-text text-right mb-[6px] font-inter text-[40px] font-semibold leading-[47px] tracking-[-1.25px]">
-                <span className="text-[25px] leading-[40px]">$ </span>
-                <AnimatedNumber value={claimableReward} decimals={2} />
+                {currency === "$" ? (
+                  <>
+                    <span className="text-[25px] leading-[40px]">$ </span>
+                    <AnimatedNumber value={claimableUsd} decimals={2} />
+                  </>
+                ) : (
+                  <>
+                    <AnimatedNumber value={claimableUgold} decimals={6} />
+                    <span className="text-[25px] leading-[40px]"> Oz</span>
+                  </>
+                )}
               </h2>
               <div className="border-t-[0.5px] border-[#FFD185] pt-[7px]"></div>
               <div className="flex justify-end items-center">
-                <p className="text-[16px] font-semibold ugold-text leading-[20px]">
-                  <AnimatedNumber value={claimableOz} decimals={6} suffix=" oz" />
+                <p className="text-[13px] font-semibold text-[#c9c9c9] leading-[16px]">
+                  {currency === "$" ? (
+                    <>
+                      ≈ <AnimatedNumber value={claimableUgold} decimals={6} suffix=" Oz" />
+                    </>
+                  ) : (
+                    <>
+                      ≈ $<AnimatedNumber value={claimableUsd} decimals={2} />
+                    </>
+                  )}
                 </p>
               </div>
             </div>
           </AnimationWrapper>
 
-          {/* Amount input with MAX button */}
-          <AnimationWrapper delay={0.2} className="mb-4">
+          {/* Amount input with MAX */}
+          <AnimationWrapper delay={0.2} className="mb-3">
             <div className="flex justify-between items-center mb-1.5">
               <p className="text-xs font-semibold text-[#EBC17B] ml-2.5">Claim Amount</p>
               <div className="flex items-center">
                 <p className="text-xs text-[#EBC17B]">
-                  / <span>$</span>
-                  <AnimatedNumber value={claimableReward} decimals={2} />
+                  / <AnimatedNumber value={claimableUgold} decimals={4} suffix=" UGOLD" />
                 </p>
                 <Button
                   className="ml-2 bg-[#EBC17B] text-black rounded-full text-xs px-6 py-2 h-[26px] font-semibold"
                   onPress={handleSetMax}
-                  isDisabled={claimableReward <= 0}
+                  isDisabled={claimableUgold <= 0}
                 >
                   MAX
                 </Button>
@@ -138,23 +223,47 @@ export const ClaimReferralPage: React.FC<ClaimReferralPageProps> = ({ onBack }) 
 
             <div className="flex rounded-full overflow-hidden">
               <div className="bg-[#D09635] text-white py-[15px] pl-5 pr-4 flex items-center justify-center text-[16px] font-semibold w-1/4 min-w-[110px]">
-                USD
+                UGOLD
               </div>
               <input
-                className="w-[80%] flex-1 bg-white text-[16px] text-black placeholder:text-[#787878] font-semibold py-[15px] pr-8 outline-none text-right"
-                placeholder="Enter USD amount"
+                className="w-[80%] flex-1 bg-white text-[16px] text-black placeholder:text-[#787878] font-semibold py-[15px] pr-6 outline-none text-right"
+                placeholder="Enter UGOLD amount"
                 value={claimAmount}
                 onChange={(e) => handleAmountChange(e.target.value)}
                 inputMode="decimal"
-                disabled={isClaiming || claimableReward <= 0}
+                disabled={isClaiming || claimableUgold <= 0}
               />
             </div>
           </AnimationWrapper>
 
+          {/* Fee + receivable */}
+          <AnimationWrapper delay={0.25} className="mb-4">
+            <div className="flex justify-between items-start px-2">
+              <span className="text-[13px] text-[#c9c9c9]">
+                Fee: <AnimatedNumber value={feeOz} decimals={6} suffix=" oz" />
+              </span>
+              <div className="flex flex-col items-end">
+                <span className="text-[13px] font-semibold text-[#EBC17B]">
+                  You will receive:{" "}
+                  {receiveOz === 0 ? (
+                    "0 oz"
+                  ) : (
+                    <AnimatedNumber value={receiveOz} decimals={6} suffix=" oz" />
+                  )}
+                </span>
+                {belowMinimum && (
+                  <span className="text-[12px] font-normal text-[#FF3B30] mt-0.5">
+                    Minimum claim amount is {MIN_CLAIM_OZ} oz.
+                  </span>
+                )}
+              </div>
+            </div>
+          </AnimationWrapper>
+
           {/* Breakdown list */}
-          <AnimationWrapper delay={0.25} className="flex-1 min-h-0 mb-4">
+          <AnimationWrapper delay={0.3} className="flex-1 min-h-0 mb-4">
             <p className="mx-2.5 text-[#EBC17B] font-inter text-[12px] font-semibold leading-[15px] tracking-[-0.12px] pb-[8px]">
-              Breakdown
+              Reward Breakdown
             </p>
             {breakdown.length === 0 ? (
               <div className="bg-black/50 rounded-[16px] p-4 text-center">
@@ -168,29 +277,63 @@ export const ClaimReferralPage: React.FC<ClaimReferralPageProps> = ({ onBack }) 
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ type: "spring", stiffness: 300, damping: 30, delay: 0.05 * idx }}
-                    className="bg-black/50 rounded-[16px] p-3 h-[64px]"
+                    className="bg-black/50 rounded-[16px] p-3"
                   >
-                    <div className="flex items-center justify-between">
+                    {/* Header: avatar + name + rank */}
+                    <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center">
-                        <div className="w-10 h-10 rounded-full bg-[#EBC17B] flex items-center justify-center mr-3">
+                        <div className="w-9 h-9 rounded-full bg-[#EBC17B] flex items-center justify-center mr-2.5">
                           <span className="text-black font-bold text-[12px]">{entry.rank}</span>
                         </div>
-                        <div>
-                          <h3 className="text-[17px] font-bold ugold-text leading-[21px]">
-                            {entry.name}
-                          </h3>
-                          <p className="text-[13px] text-[#c9c9c9] leading-[16px]">
-                            {entry.percent}
-                          </p>
-                        </div>
+                        <h3 className="text-[16px] font-bold ugold-text leading-[20px]">
+                          {entry.name}
+                        </h3>
                       </div>
-                      <div className="text-right">
-                        <p className="text-[17px] font-semibold text-[#FFD185] leading-[21px]">
-                          $<AnimatedNumber value={entry.amount} decimals={2} />
-                        </p>
-                        <p className="text-[13px] font-semibold text-[#c9c9c9] leading-[16px]">
-                          ≈ <AnimatedNumber value={entry.amount * REFERRAL_OZ_PER_USD} decimals={6} suffix=" oz" />
-                        </p>
+                    </div>
+
+                    <div className="border-t-[0.5px] border-[#3a3a3a] mb-2"></div>
+
+                    {/* Field rows */}
+                    <div className="space-y-1.5 text-[12px] leading-[15px]">
+                      <div className="flex justify-between">
+                        <span className="text-[#c9c9c9]">Staking Date</span>
+                        <span className="text-[#EBC17B] font-semibold">{entry.stakingDate}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-[#c9c9c9]">Staking Amount</span>
+                        <span className="text-[#EBC17B] font-semibold">
+                          <AnimatedNumber value={entry.stakingAmountUgold} decimals={4} suffix=" UGOLD" />
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-[#c9c9c9]">First Reward Date</span>
+                        <span className="text-[#EBC17B] font-semibold">{entry.firstRewardDate}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-[#c9c9c9]">Next Reward Date</span>
+                        <span className="text-[#EBC17B] font-semibold">{entry.nextRewardDate}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-[#c9c9c9]">Last Reward Date</span>
+                        <span className="text-[#EBC17B] font-semibold">{entry.lastRewardDate}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-[#c9c9c9]">Total Rewards</span>
+                        <span className="text-[#FFD185] font-semibold">
+                          <AnimatedNumber value={entry.totalRewardsUgold} decimals={6} suffix=" UGOLD" />
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-[#c9c9c9]">Next Reward Amount</span>
+                        <span className="text-[#FFD185] font-semibold">
+                          <AnimatedNumber value={entry.nextRewardAmountUgold} decimals={6} suffix=" UGOLD" />
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-[#c9c9c9]">Remaining Rewards</span>
+                        <span className="text-[#FFD185] font-semibold">
+                          <AnimatedNumber value={entry.remainingRewardsUgold} decimals={6} suffix=" UGOLD" />
+                        </span>
                       </div>
                     </div>
                   </motion.div>
@@ -205,7 +348,7 @@ export const ClaimReferralPage: React.FC<ClaimReferralPageProps> = ({ onBack }) 
               className="gold-gradient w-full rounded-full h-[64px] text-[18px] font-semibold text-white mb-[82px] disabled:opacity-60"
               onPress={handleClaim}
               isLoading={isClaiming}
-              isDisabled={isClaiming || claimableReward <= 0 || !isAmountValid}
+              isDisabled={isClaiming || claimableUgold <= 0 || !isAmountValid}
             >
               {isClaiming ? "Claiming..." : "Claim Referral Reward"}
             </Button>
@@ -244,7 +387,7 @@ export const ClaimReferralPage: React.FC<ClaimReferralPageProps> = ({ onBack }) 
                 </DrawerHeader>
                 <DrawerBody className="text-center gap-0 py-0 pb-[32px]">
                   <p className="text-center text-[14px] font-medium leading-[17px] mb-[5px] max-w-[292px] mx-auto text-[#c9c9c9]">
-                    You have successfully claimed ${claimSuccess.amount.toFixed(2)} in referral rewards.
+                    You have successfully claimed {claimSuccess.ugold.toFixed(6)} UGOLD in referral rewards.
                   </p>
 
                   <div className="flex justify-center mt-[32px] mb-[64px]">
