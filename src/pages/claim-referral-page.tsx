@@ -158,7 +158,7 @@ export const ClaimReferralPage: React.FC<ClaimReferralPageProps> = ({ onBack }) 
                   className="w-[20px] h-[20px]"
                 />
               </div>
-              <h1 className="text-center font-inter text-[20px] font-semibold leading-[24px] tracking-[-0.2px] text-[#EBC17B]">
+              <h1 className="text-center font-inter text-[17px] font-semibold leading-[24px] tracking-[-0.2px] text-[#EBC17B] px-12">
                 Claim Referral Reward
               </h1>
               <div className="absolute right-0">
@@ -182,7 +182,7 @@ export const ClaimReferralPage: React.FC<ClaimReferralPageProps> = ({ onBack }) 
                 ) : (
                   <>
                     <AnimatedNumber value={claimableUgold} decimals={6} />
-                    <span className="text-[25px] leading-[40px]"> Oz</span>
+                    <span className="text-[25px] leading-[40px]"> UGOLD</span>
                   </>
                 )}
               </h2>
@@ -191,7 +191,7 @@ export const ClaimReferralPage: React.FC<ClaimReferralPageProps> = ({ onBack }) 
                 <p className="text-[13px] font-semibold text-[#c9c9c9] leading-[16px]">
                   {currency === "$" ? (
                     <>
-                      ≈ <AnimatedNumber value={claimableUgold} decimals={6} suffix=" Oz" />
+                      ≈ <AnimatedNumber value={claimableUgold} decimals={6} suffix=" UGOLD" />
                     </>
                   ) : (
                     <>
@@ -239,21 +239,21 @@ export const ClaimReferralPage: React.FC<ClaimReferralPageProps> = ({ onBack }) 
           {/* Fee + receivable */}
           <AnimationWrapper delay={0.25} className="mb-4">
             <div className="flex justify-between items-start px-2">
-              <span className="text-[13px] text-[#c9c9c9]">
-                Fee: <AnimatedNumber value={feeOz} decimals={6} suffix=" oz" />
+              <span className="text-[13px] text-[#c9c9c9] whitespace-nowrap">
+                Fee: <AnimatedNumber value={feeOz} decimals={6} suffix=" UGOLD" />
               </span>
               <div className="flex flex-col items-end">
                 <span className="text-[13px] font-semibold text-[#EBC17B]">
                   You will receive:{" "}
                   {receiveOz === 0 ? (
-                    "0 oz"
+                    "0 UGOLD"
                   ) : (
-                    <AnimatedNumber value={receiveOz} decimals={6} suffix=" oz" />
+                    <AnimatedNumber value={receiveOz} decimals={6} suffix=" UGOLD" />
                   )}
                 </span>
                 {belowMinimum && (
-                  <span className="text-[12px] font-normal text-[#FF3B30] mt-0.5">
-                    Minimum claim amount is {MIN_CLAIM_OZ} oz.
+                  <span className="text-[12px] font-normal text-[#FF3B30] mt-0.5 whitespace-nowrap">
+                    Minimum claim amount is {MIN_CLAIM_OZ} UGOLD.
                   </span>
                 )}
               </div>
@@ -261,7 +261,7 @@ export const ClaimReferralPage: React.FC<ClaimReferralPageProps> = ({ onBack }) 
           </AnimationWrapper>
 
           {/* Breakdown list */}
-          <AnimationWrapper delay={0.3} className="flex-1 min-h-0 mb-4">
+          <AnimationWrapper delay={0.3} className="flex-1 min-h-0 mb-4 flex flex-col">
             <p className="mx-2.5 text-[#EBC17B] font-inter text-[12px] font-semibold leading-[15px] tracking-[-0.12px] pb-[8px]">
               Reward Breakdown
             </p>
@@ -270,68 +270,47 @@ export const ClaimReferralPage: React.FC<ClaimReferralPageProps> = ({ onBack }) 
                 <p className="text-[14px] text-[#c9c9c9]">No breakdown available</p>
               </div>
             ) : (
-              <div className="space-y-3 max-h-full overflow-y-auto hide-scrollbar pr-1">
+              <div className="space-y-3 flex-1 min-h-0 overflow-y-auto hide-scrollbar pr-1">
                 {breakdown.map((entry, idx) => (
                   <motion.div
                     key={`${entry.name}-${idx}`}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ type: "spring", stiffness: 300, damping: 30, delay: 0.05 * idx }}
-                    className="bg-black/50 rounded-[16px] p-3"
+                    className="bg-black/50 rounded-[12px] px-3 py-2.5"
                   >
-                    {/* Header: avatar + name + rank */}
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center">
-                        <div className="w-9 h-9 rounded-full bg-[#EBC17B] flex items-center justify-center mr-2.5">
-                          <span className="text-black font-bold text-[12px]">{entry.rank}</span>
+                    {/* Top: Total Rewards (prominent) + username (muted) */}
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex flex-col">
+                        <span className="text-[10px] text-[#c9c9c9] leading-[12px]">Total Rewards</span>
+                        <div className="flex items-baseline whitespace-nowrap">
+                          <span className="gold-gradient-text font-bold text-[16px] leading-[22px]">
+                            <AnimatedNumber value={entry.totalRewardsUgold} decimals={6} />
+                          </span>
+                          <span className="text-[11px] ml-1 font-bold text-[#EBC17B] leading-[14px]">
+                            UGOLD
+                          </span>
                         </div>
-                        <h3 className="text-[16px] font-bold ugold-text leading-[20px]">
-                          {entry.name}
-                        </h3>
+                      </div>
+                      <div className="flex flex-col items-end">
+                        <span className="text-[12px] text-[#EBC17B] font-semibold leading-[14px]">{entry.name}</span>
+                        <span className="text-[10px] text-[#c9c9c9] leading-[12px] mt-0.5">
+                          Stake <AnimatedNumber value={entry.stakingAmountUgold} decimals={4} suffix=" UGOLD" />
+                        </span>
                       </div>
                     </div>
 
-                    <div className="border-t-[0.5px] border-[#3a3a3a] mb-2"></div>
-
-                    {/* Field rows */}
-                    <div className="space-y-1.5 text-[12px] leading-[15px]">
-                      <div className="flex justify-between">
-                        <span className="text-[#c9c9c9]">Staking Date</span>
-                        <span className="text-[#EBC17B] font-semibold">{entry.stakingDate}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-[#c9c9c9]">Staking Amount</span>
-                        <span className="text-[#EBC17B] font-semibold">
-                          <AnimatedNumber value={entry.stakingAmountUgold} decimals={4} suffix=" UGOLD" />
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-[#c9c9c9]">First Reward Date</span>
-                        <span className="text-[#EBC17B] font-semibold">{entry.firstRewardDate}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-[#c9c9c9]">Next Reward Date</span>
-                        <span className="text-[#EBC17B] font-semibold">{entry.nextRewardDate}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-[#c9c9c9]">Last Reward Date</span>
-                        <span className="text-[#EBC17B] font-semibold">{entry.lastRewardDate}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-[#c9c9c9]">Total Rewards</span>
-                        <span className="text-[#FFD185] font-semibold">
-                          <AnimatedNumber value={entry.totalRewardsUgold} decimals={6} suffix=" UGOLD" />
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-[#c9c9c9]">Next Reward Amount</span>
-                        <span className="text-[#FFD185] font-semibold">
+                    {/* Bottom: Next + Remaining stats */}
+                    <div className="grid grid-cols-2 gap-2 pt-2 border-t-[0.5px] border-[#3a3a3a]">
+                      <div className="flex flex-col">
+                        <span className="text-[10px] text-[#c9c9c9] leading-[12px]">Next · {entry.nextRewardDate}</span>
+                        <span className="text-[12px] text-[#FFD185] font-semibold leading-[15px]">
                           <AnimatedNumber value={entry.nextRewardAmountUgold} decimals={6} suffix=" UGOLD" />
                         </span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-[#c9c9c9]">Remaining Rewards</span>
-                        <span className="text-[#FFD185] font-semibold">
+                      <div className="flex flex-col items-end">
+                        <span className="text-[10px] text-[#c9c9c9] leading-[12px]">Remaining</span>
+                        <span className="text-[12px] text-[#FFD185] font-semibold leading-[15px]">
                           <AnimatedNumber value={entry.remainingRewardsUgold} decimals={6} suffix=" UGOLD" />
                         </span>
                       </div>
@@ -345,7 +324,7 @@ export const ClaimReferralPage: React.FC<ClaimReferralPageProps> = ({ onBack }) 
           {/* Bottom CTA */}
           <AnimationWrapper type="button" delay={0.4}>
             <Button
-              className="gold-gradient w-full rounded-full h-[64px] text-[18px] font-semibold text-white mb-[82px] disabled:opacity-60"
+              className="gold-gradient w-full rounded-full h-[64px] text-[18px] font-semibold text-white mb-6 disabled:opacity-60"
               onPress={handleClaim}
               isLoading={isClaiming}
               isDisabled={isClaiming || claimableUgold <= 0 || !isAmountValid}

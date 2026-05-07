@@ -2,6 +2,8 @@ import React from "react";
 import { AnimationWrapper } from "../components/animation-wrapper";
 import { AnimatedNumber } from "../components/animated-number";
 import { InviteModal } from "../components/invite-modal";
+import { CurrencyToggle } from "../components/currency-toggle";
+import { useCurrency } from "../context/currency-context";
 import { motion } from "framer-motion";
 
 interface InvitePageProps {
@@ -26,23 +28,25 @@ const TOTAL_PAGES = 9;
 const INITIAL_CLAIMABLE_REWARD = 25.5;
 const REFERRAL_OZ_PER_USD = 1 / 2400;
 
-const TriangleDown: React.FC = () => (
-  <svg width="11" height="8" viewBox="0 0 11 8" xmlns="http://www.w3.org/2000/svg">
-    <polygon points="0,0 11,0 5.5,8" fill="#EBC17B" />
-  </svg>
-);
-
-const TriangleRight: React.FC = () => (
-  <svg width="8" height="11" viewBox="0 0 8 11" xmlns="http://www.w3.org/2000/svg">
-    <polygon points="0,0 0,11 8,5.5" fill="#EBC17B" />
-  </svg>
+const TierArrow: React.FC<{ expanded: boolean }> = ({ expanded }) => (
+  <motion.svg
+    width="9"
+    height="9"
+    viewBox="0 0 9 9"
+    xmlns="http://www.w3.org/2000/svg"
+    animate={{ rotate: expanded ? 90 : 0 }}
+    transition={{ duration: 0.18, ease: "easeOut" }}
+    style={{ transformOrigin: "50% 50%" }}
+  >
+    <polygon points="0,0 0,9 9,4.5" fill="#EBC17B" />
+  </motion.svg>
 );
 
 const COLS = {
-  name:    "w-[34%] shrink-0",
-  tier:    "w-[20%] shrink-0",
-  staking: "w-[30%] shrink-0",
-  days:    "w-[16%] shrink-0",
+  name:    "w-[110px] shrink-0",
+  tier:    "w-[80px] shrink-0",
+  staking: "w-[120px] shrink-0",
+  days:    "w-[60px] shrink-0",
 };
 
 interface RewardRowProps {
@@ -65,14 +69,17 @@ const RewardRowItem: React.FC<RewardRowProps> = ({ row, expanded, onToggle, dela
         {row.name}
       </span>
       <span className={`text-[#EBC17B] text-[13px] font-bold tracking-[-0.5px] leading-[30px] ${COLS.tier} flex items-center gap-1`}>
-        {hasChildren && (
+        {hasChildren ? (
           <button
             onClick={onToggle}
-            className="flex items-center justify-center w-3 h-6"
+            className="flex items-center justify-center w-3 h-6 shrink-0"
             aria-label={expanded ? "Collapse" : "Expand"}
+            aria-expanded={expanded}
           >
-            {expanded ? <TriangleRight /> : <TriangleDown />}
+            <TierArrow expanded={!!expanded} />
           </button>
+        ) : (
+          <span className="w-3 h-6 shrink-0" aria-hidden="true" />
         )}
         <span>{row.tier}</span>
       </span>
@@ -87,6 +94,7 @@ const RewardRowItem: React.FC<RewardRowProps> = ({ row, expanded, onToggle, dela
 };
 
 export const InvitePage: React.FC<InvitePageProps> = ({ onBack, onNavigate }) => {
+  const { currency } = useCurrency();
   const [activeTab, setActiveTab] = React.useState<"invite" | "reward">("invite");
   const [page, setPage] = React.useState(2);
   const [showInviteModal, setShowInviteModal] = React.useState(false);
@@ -204,6 +212,9 @@ export const InvitePage: React.FC<InvitePageProps> = ({ onBack, onNavigate }) =>
               <h1 className="text-center font-inter text-[20px] font-semibold leading-[24px] tracking-[-0.2px] text-[#EBC17B]">
                 Invite
               </h1>
+              <div className="absolute right-0">
+                <CurrencyToggle />
+              </div>
             </div>
           </AnimationWrapper>
 
@@ -249,13 +260,30 @@ export const InvitePage: React.FC<InvitePageProps> = ({ onBack, onNavigate }) =>
                   Claimable Referral Reward
                 </span>
                 <h2 className="gold-gradient-text text-right mb-[6px] font-inter text-[40px] font-semibold leading-[47px] tracking-[-1.25px]">
-                  <AnimatedNumber value={claimableOz} decimals={6} />
-                  <span className="text-[25px] leading-[40px]"> Oz</span>
+                  {currency === "$" ? (
+                    <>
+                      <span className="text-[25px] leading-[40px]">$ </span>
+                      <AnimatedNumber value={claimableReward} decimals={2} />
+                    </>
+                  ) : (
+                    <>
+                      <AnimatedNumber value={claimableOz} decimals={6} />
+                      <span className="text-[25px] leading-[40px]"> UGOLD</span>
+                    </>
+                  )}
                 </h2>
                 <div className="border-t-[0.5px] border-[#FFD185] pt-[7px]"></div>
                 <div className="flex justify-end items-center">
                   <p className="text-[13px] font-semibold text-[#c9c9c9] leading-[16px]">
-                    ≈ $<AnimatedNumber value={claimableReward} decimals={2} />
+                    {currency === "$" ? (
+                      <>
+                        ≈ <AnimatedNumber value={claimableOz} decimals={6} suffix=" UGOLD" />
+                      </>
+                    ) : (
+                      <>
+                        ≈ $<AnimatedNumber value={claimableReward} decimals={2} />
+                      </>
+                    )}
                   </p>
                 </div>
               </div>
@@ -292,18 +320,20 @@ export const InvitePage: React.FC<InvitePageProps> = ({ onBack, onNavigate }) =>
                 </div>
               ) : (
                 <div className="h-full overflow-y-auto hide-scrollbar px-3 pt-2 pb-3">
-                  <div>
-                    {/* Header row */}
-                    <div className="flex items-center mb-[4px] px-4">
-                      <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.name}`}>Name</span>
-                      <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.tier}`}>Tier</span>
-                      <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold whitespace ${COLS.staking} text-center`}>Staking (UGOLD)</span>
-                      <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.days} text-right`}>Days</span>
-                    </div>
-                    <div className="bg-black/60 backdrop-blur-[20px] rounded-[16px] px-4 pt-2 pb-3">
-                      {rewardRows.map((row, index) =>
-                        renderRowTree(row, String(index), index)
-                      )}
+                  <div className="overflow-x-auto hide-scrollbar">
+                    <div className="min-w-[402px]">
+                      {/* Header row */}
+                      <div className="flex items-center mb-[4px] px-4">
+                        <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.name}`}>Name</span>
+                        <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.tier}`}>Tier</span>
+                        <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold whitespace-nowrap ${COLS.staking} text-center`}>Staking(UGOLD)</span>
+                        <span className={`text-sm text-[#EBC17B] leading-[17px] font-bold ${COLS.days} text-right`}>Days</span>
+                      </div>
+                      <div className="bg-black/60 backdrop-blur-[20px] rounded-[16px] px-4 pt-2 pb-3">
+                        {rewardRows.map((row, index) =>
+                          renderRowTree(row, String(index), index)
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -353,14 +383,14 @@ export const InvitePage: React.FC<InvitePageProps> = ({ onBack, onNavigate }) =>
             {activeTab === "invite" ? (
               <button
                 onClick={() => setShowInviteModal(true)}
-                className="gold-gradient w-full rounded-full h-[64px] text-[18px] font-semibold text-white mb-[82px]"
+                className="gold-gradient w-full rounded-full h-[64px] text-[18px] font-semibold text-white mb-6"
               >
                 Refer a Friend
               </button>
             ) : (
               <button
                 onClick={() => onNavigate?.("claim-referral")}
-                className="gold-gradient w-full rounded-full h-[64px] text-[18px] font-semibold text-white mb-[82px]"
+                className="gold-gradient w-full rounded-full h-[64px] text-[18px] font-semibold text-white mb-6"
               >
                 Claim Referral Reward
               </button>
